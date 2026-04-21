@@ -7,14 +7,6 @@ sdk: docker
 pinned: false
 ---
 
----
-title: NegotiateAI Adversarial Procurement Arena
-emoji: 🤝
-colorFrom: blue
-colorTo: purple
-sdk: docker
-pinned: false
----
 title: NegotiateAI Adversarial Procurement Arena
 emoji: 🤝
 colorFrom: blue
