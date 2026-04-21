@@ -1,0 +1,64 @@
+name: NegotiateAI-ProcurementArena
+version: 1.0.0
+description: >
+  The world's first multi-LLM adversarial procurement environment.
+  A buyer AI negotiates contracts in natural language against supplier AIs
+  with hidden agendas, while a rival buyer AI competes for the same capacity
+  across a 12-week enterprise procurement cycle.
+
+author: prasanthdj8
+github: https://github.com/Prasanthdj8/negotiateai-openenv
+huggingface: https://huggingface.co/spaces/prasanthdj8/negotiateai-openenv
+
+themes:
+  - "Theme 1: Multi-Agent Interactions (supplier LLMs + rival LLM buyer)"
+  - "Theme 2: Long-Horizon Planning (12-week fiscal cycle)"
+  - "Theme 3.1: World Modeling - Professional Tasks (enterprise PR workflow)"
+  - "Theme 4: Self-Improvement (curriculum engine with 5 difficulty tiers)"
+  - "Theme 5: Wild Card (novel domain + LLM-vs-LLM negotiation paradigm)"
+
+tasks:
+  - id: easy_negotiation
+    name: Single Category Negotiation
+    description: Negotiate software licenses with 5 cooperative suppliers. No rival, no disruptions.
+    suppliers: 5
+    weeks: 4
+    has_rival: false
+    baseline_score: 0.15
+    target_score: 0.60
+
+  - id: medium_adversarial
+    name: Multi-Category Adversarial Sourcing
+    description: 12 suppliers, deceptive agents, rival buyer, one supplier goes dark week 5.
+    suppliers: 12
+    weeks: 8
+    has_rival: true
+    baseline_score: 0.10
+    target_score: 0.50
+
+  - id: hard_full_arena
+    name: Full Adversarial Procurement Arena
+    description: 20 suppliers, supply chain crisis, budget cut, LLM rival buyer. Survive all three.
+    suppliers: 16
+    weeks: 12
+    has_rival: true
+    baseline_score: 0.05
+    target_score: 0.40
+
+endpoints:
+  reset:    POST /reset
+  step:     POST /step
+  state:    GET  /state
+  tasks:    GET  /tasks
+  health:   GET  /health
+  metadata: GET  /metadata
+  schema:   GET  /schema
+  mcp:      POST /mcp
+  ws:       WS   /ws
+
+scoring:
+  easy:   "cost_savings_ratio × fulfillment_rate"
+  medium: "cost_savings×0.35 + fulfillment×0.30 + deception_catch×0.20 + cycle_time×0.15"
+  hard:   "cost_savings×0.25 + fulfillment×0.25 + rival_outperform×0.20 + disruption_recovery×0.15 + budget_compliance×0.10 + deception_catch×0.05"
+
+port: 7860
