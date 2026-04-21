@@ -312,6 +312,8 @@ Full training notebook: [Colab →](#)
 | \`medium_adversarial\` | 0.10 | **0.51** | **+410%** |
 | \`hard_full_arena\` | 0.05 | **0.38** | **+660%** |
 
+> Random agent baselines measured empirically. Target scores are projected training outcomes based on reward structure and curriculum design.
+
 ---
 
 ## Author
