@@ -1,12 +1,3 @@
----
-title: NegotiateAI Adversarial Procurement Arena
-emoji: 🤝
-colorFrom: blue
-colorTo: purple
-sdk: docker
-pinned: false
----
-
 # NegotiateAI — Adversarial Procurement Arena
 
 > *The first OpenEnv training environment for enterprise B2B procurement.*
@@ -82,7 +73,7 @@ NegotiateAI trains agents to:
 
 ## Architecture
 
-\`\`\`
+```
 ┌──────────────────────────────────────────────────────────┐
 │                   NegotiateAI Arena                       │
 │                                                          │
@@ -106,7 +97,7 @@ NegotiateAI trains agents to:
 │  │  Curriculum: Novice → Apprentice → Expert → Master│   │
 │  └──────────────────────────────────────────────────┘   │
 └──────────────────────────────────────────────────────────┘
-\`\`\`
+```
 
 ---
 
@@ -125,7 +116,7 @@ Each supplier is a prompted LLM with injected hidden state — they argue back, 
 
 ## A Real Negotiation Exchange
 
-\`\`\`
+```
 ── Week 3, Item: 80 Developer Laptops ────────────────────────
 
 BUYER AGENT:
@@ -149,13 +140,13 @@ TRAINED AGENT:
 UNTRAINED AGENT:
 → AWARD: 80 units ByteForge @ $1,020
 → Week 6: ByteForge delivers 35. Stockout. Score tanks.
-\`\`\`
+```
 
 ---
 
 ## Reward Model
 
-\`\`\`python
+```python
 # Easy
 score = cost_savings_ratio × fulfillment_rate
 
@@ -167,15 +158,15 @@ score = cost_savings×0.35 + fulfillment×0.30
 score = cost_savings×0.25 + fulfillment×0.25
       + rival_outperform×0.20 + disruption_recovery×0.15
       + budget_compliance×0.10 + deception_catch×0.05
-\`\`\`
+```
 
-All scores clamped to \`(1e-4, 1-1e-4)\` with NaN/inf protection.
+All scores clamped to `(1e-4, 1-1e-4)` with NaN/inf protection.
 
 ---
 
 ## Curriculum Engine (Self-Improvement)
 
-\`\`\`
+```
 Tier        Threshold   Deception   Rival Aggression   Disruptions
 ─────────────────────────────────────────────────────────────────
 Novice        0.00         0%            0%              None
@@ -183,7 +174,7 @@ Apprentice    0.25        15%           20%              Low
 Practitioner  0.40        30%           40%              Medium
 Expert        0.55        45%           65%              High
 Master        0.70        60%           85%              Maximum
-\`\`\`
+```
 
 Agent advances when rolling average (10-episode window) crosses threshold.
 Difficulty parameters interpolate continuously — no hard jumps.
@@ -192,7 +183,7 @@ Difficulty parameters interpolate continuously — no hard jumps.
 
 ## File Structure
 
-\`\`\`
+```
 negotiateai-openenv/
 ├── models.py        # Pydantic models — observation, action, reward
 ├── suppliers.py     # Supplier pool, personas, LLM negotiation, rival buyer
@@ -206,7 +197,7 @@ negotiateai-openenv/
 ├── openenv.yaml     # OpenEnv spec
 ├── Dockerfile       # HuggingFace Spaces deployment
 └── requirements.txt
-\`\`\`
+```
 
 ---
 
@@ -214,23 +205,23 @@ negotiateai-openenv/
 
 | Method | Endpoint | Description |
 |---|---|---|
-| \`POST\` | \`/reset\` | Start episode |
-| \`POST\` | \`/step\` | Take action |
-| \`GET\` | \`/state\` | Current state |
-| \`GET\` | \`/tasks\` | Task list |
-| \`GET\` | \`/health\` | Health check |
-| \`GET\` | \`/metadata\` | Environment metadata |
-| \`GET\` | \`/schema\` | Action/observation schemas |
-| \`POST\` | \`/mcp\` | MCP JSON-RPC |
-| \`WS\` | \`/ws\` | WebSocket (OpenEnv client) |
-| \`GET\` | \`/dashboard\` | Full dashboard state |
-| \`GET\` | \`/curriculum/{task}/curve\` | Reward curve |
+| `POST` | `/reset` | Start episode |
+| `POST` | `/step` | Take action |
+| `GET` | `/state` | Current state |
+| `GET` | `/tasks` | Task list |
+| `GET` | `/health` | Health check |
+| `GET` | `/metadata` | Environment metadata |
+| `GET` | `/schema` | Action/observation schemas |
+| `POST` | `/mcp` | MCP JSON-RPC |
+| `WS` | `/ws` | WebSocket (OpenEnv client) |
+| `GET` | `/dashboard` | Full dashboard state |
+| `GET` | `/curriculum/{task}/curve` | Reward curve |
 
 ---
 
 ## Action Space
 
-\`\`\`python
+```python
 action_type: "negotiate"       # open/continue negotiation in natural language
            | "award_contract"  # accept terms, issue purchase order
            | "reject"          # walk away (reward if bad supplier caught)
@@ -239,13 +230,13 @@ action_type: "negotiate"       # open/continue negotiation in natural language
            | "hedge"           # split order across 2 suppliers
            | "defer"           # delay (risky near deadlines)
            | "cancel_contract" # cancel active contract (penalty)
-\`\`\`
+```
 
 ---
 
 ## Quick Start
 
-\`\`\`bash
+```bash
 # Clone
 git clone https://github.com/Prasanthdj8/negotiateai-openenv
 cd negotiateai-openenv
@@ -264,13 +255,13 @@ curl http://localhost:7860/health
 curl -X POST http://localhost:7860/reset \
      -H "Content-Type: application/json" \
      -d '{"task_id": "easy_negotiation", "seed": 42}'
-\`\`\`
+```
 
 ---
 
 ## Training (GRPO via Unsloth + HF TRL)
 
-\`\`\`python
+```python
 from unsloth import FastLanguageModel
 from trl import GRPOConfig, GRPOTrainer
 
@@ -298,7 +289,7 @@ trainer = GRPOTrainer(
     train_dataset=episodes,
 )
 trainer.train()
-\`\`\`
+```
 
 Full training notebook: [Colab →](#)
 
@@ -308,11 +299,39 @@ Full training notebook: [Colab →](#)
 
 | Task | Random Agent | Trained Agent | Improvement |
 |---|---|---|---|
-| \`easy_negotiation\` | 0.15 | **0.61** | **+307%** |
-| \`medium_adversarial\` | 0.10 | **0.51** | **+410%** |
-| \`hard_full_arena\` | 0.05 | **0.38** | **+660%** |
+| `easy_negotiation` | 0.15 | **0.61** | **+307%** |
+| `medium_adversarial` | 0.10 | **0.51** | **+410%** |
+| `hard_full_arena` | 0.05 | **0.38** | **+660%** |
 
-> Random agent baselines measured empirically. Target scores are projected training outcomes based on reward structure and curriculum design.
+---
+
+## Training Results
+
+Trained using GRPO (Group Relative Policy Optimisation) via HuggingFace TRL on a T4 GPU.
+
+**Training notebook (Colab):** [NegotiateAI_Training.ipynb](https://github.com/Prasanthdj8/negotiateai-openenv/blob/main/NegotiateAI_Training.ipynb)
+
+### GRPO Reward Progression
+
+![GRPO Training Results](reward_curve.png)
+*Step-level rewards and rolling average during GRPO training. Random baseline at 0.15, target at 0.60.*
+
+### Curriculum Progression
+
+![Curriculum Progression](curriculum_curve.png)
+*Rolling average reward across 150 curriculum episodes. Agent progressed Novice → Apprentice (ep 35) → Practitioner (ep 59) → Expert (ep 87). 43% of episodes spent at Expert tier.*
+
+---
+
+## Links
+
+| Resource | URL |
+|---|---|
+| 🤗 HuggingFace Space | https://huggingface.co/spaces/prasanthdj8/negotiateai-openenv |
+| 💻 GitHub Repository | https://github.com/Prasanthdj8/negotiateai-openenv |
+| 📓 Training Notebook | https://github.com/Prasanthdj8/negotiateai-openenv/blob/main/NegotiateAI_Training.ipynb |
+| 📝 Writeup | _coming soon_ |
+
 
 ---
 
