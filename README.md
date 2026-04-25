@@ -1,3 +1,12 @@
+---
+title: NegotiateAI Adversarial Procurement Arena
+emoji: 🤝
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # NegotiateAI — Adversarial Procurement Arena
 
 > *The first OpenEnv training environment for enterprise B2B procurement.*
