@@ -15,7 +15,7 @@ pinned: false
 
 [![OpenEnv](https://img.shields.io/badge/OpenEnv-Compatible-blue)](https://openenv.ai)
 [![HuggingFace](https://img.shields.io/badge/🤗-Live%20Demo-yellow)](https://huggingface.co/spaces/prasanthdj8/negotiateai-openenv)
-[![GitHub](https://img.shields.io/badge/GitHub-prasanthdj8-black)](https://github.com/Prasanthdj8/negotiateai-openenv)
+[![Model](https://img.shields.io/badge/🤖-Trained%20Model-green)](https://huggingface.co/prasanthdj8/negotiateai-procurement-agent)
 
 ---
 
@@ -125,6 +125,8 @@ Each supplier is a prompted LLM with injected hidden state — they argue back, 
 
 ## A Real Negotiation Exchange
 
+> *Illustrative example showing expected trained vs untrained agent behavior.*
+
 ```
 ── Week 3, Item: 80 Developer Laptops ────────────────────────
 
@@ -187,6 +189,37 @@ Master        0.70        60%           85%              Maximum
 
 Agent advances when rolling average (10-episode window) crosses threshold.
 Difficulty parameters interpolate continuously — no hard jumps.
+
+---
+
+## Training Results
+
+Trained using GRPO via HuggingFace TRL on an A100 GPU.
+
+**Training Notebook:** [NegotiateAI_Training.ipynb](https://huggingface.co/spaces/prasanthdj8/negotiateai-openenv/blob/main/NegotiateAI_Training.ipynb)
+
+### Curriculum Progression
+
+![Curriculum Progression](curriculum_curve.png)
+*Curriculum progression across 200 validation episodes. Agent advanced Novice → Apprentice (ep 35) → Practitioner (ep 59) → Expert (ep 87). 43% of episodes spent at Expert tier.*
+
+### GRPO Reward Progression
+
+![GRPO Training Results](reward_curve.png)
+*Step-level rewards and rolling average during GRPO training on 1333 training samples. Reward signal maintains 131x separation between valid and invalid actions.*
+
+### Results Summary
+
+| Metric | Value |
+|---|---|
+| Training episodes | 200 |
+| Training samples | 1333 |
+| Model | Llama 3.2 3B + LoRA adapters |
+| Training method | GRPO via HuggingFace TRL |
+| Tier advancements | Novice → Apprentice → Practitioner → Expert |
+| Expert tier episodes | 43% |
+| Reward signal separation | 131x (valid vs invalid actions) |
+| First 20 steps avg reward | 0.0168 |
 
 ---
 
@@ -268,79 +301,14 @@ curl -X POST http://localhost:7860/reset \
 
 ---
 
-## Training (GRPO via Unsloth + HF TRL)
-
-```python
-from unsloth import FastLanguageModel
-from trl import GRPOConfig, GRPOTrainer
-
-# Load model
-model, tokenizer = FastLanguageModel.from_pretrained(
-    "unsloth/Llama-3.2-3B-Instruct",
-    max_seq_length=1024,
-    load_in_4bit=True,
-)
-
-# Reward function — calls /step on the environment
-def procurement_reward(completions, observations, **kwargs):
-    rewards = []
-    for completion, obs in zip(completions, observations):
-        action = json.loads(completion[0]["content"])
-        result = requests.post(f"{ENV_URL}/step", json={"action": action}).json()
-        rewards.append(float(np.clip(result["reward"]["total"], 1e-4, 1-1e-4)))
-    return rewards
-
-# Train
-trainer = GRPOTrainer(
-    model=model,
-    reward_funcs=procurement_reward,
-    args=GRPOConfig(learning_rate=5e-6, num_generations=4, ...),
-    train_dataset=episodes,
-)
-trainer.train()
-```
-
-Full training notebook: [Colab →](#)
-
----
-
-## Results
-
-| Task | Random Agent | Trained Agent | Improvement |
-|---|---|---|---|
-| `easy_negotiation` | 0.15 | **0.61** | **+307%** |
-| `medium_adversarial` | 0.10 | **0.51** | **+410%** |
-| `hard_full_arena` | 0.05 | **0.38** | **+660%** |
-
----
-
-## Training Results
-
-Trained using GRPO (Group Relative Policy Optimisation) via HuggingFace TRL on a T4 GPU.
-
-**Training notebook (Colab):** [NegotiateAI_Training.ipynb](https://github.com/Prasanthdj8/negotiateai-openenv/blob/main/NegotiateAI_Training.ipynb)
-
-### GRPO Reward Progression
-
-![GRPO Training Results](reward_curve.png)
-*Step-level rewards and rolling average during GRPO training. Random baseline at 0.15, target at 0.60.*
-
-### Curriculum Progression
-
-![Curriculum Progression](curriculum_curve.png)
-*Rolling average reward across 150 curriculum episodes. Agent progressed Novice → Apprentice (ep 35) → Practitioner (ep 59) → Expert (ep 87). 43% of episodes spent at Expert tier.*
-
----
-
 ## Links
 
 | Resource | URL |
 |---|---|
 | 🤗 HuggingFace Space | https://huggingface.co/spaces/prasanthdj8/negotiateai-openenv |
-| 💻 GitHub Repository | https://github.com/Prasanthdj8/negotiateai-openenv |
-| 📓 Training Notebook | https://github.com/Prasanthdj8/negotiateai-openenv/blob/main/NegotiateAI_Training.ipynb |
-| 📝 Writeup | _coming soon_ |
-
+| 📓 Training Notebook | https://huggingface.co/spaces/prasanthdj8/negotiateai-openenv/blob/main/NegotiateAI_Training.ipynb |
+| 🤖 Trained Model | https://huggingface.co/prasanthdj8/negotiateai-procurement-agent |
+| 📝 Blog | [Blog.md](https://huggingface.co/spaces/prasanthdj8/negotiateai-openenv/blob/main/Blog.md) |
 
 ---
 
@@ -348,7 +316,6 @@ Trained using GRPO (Group Relative Policy Optimisation) via HuggingFace TRL on a
 
 **prasanthdj8** — Built for the Meta PyTorch OpenEnv Hackathon Finale, April 2026.
 
-- GitHub: [@Prasanthdj8](https://github.com/Prasanthdj8)
 - HuggingFace: [prasanthdj8](https://huggingface.co/prasanthdj8)
 - LinkedIn: [prasanthdj8](https://linkedin.com/in/prasanthdj8)
 
