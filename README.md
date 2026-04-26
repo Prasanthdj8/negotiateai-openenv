@@ -233,18 +233,24 @@ Trained using GRPO via HuggingFace TRL on an A100 GPU.
 
 ```
 negotiateai-openenv/
-├── models.py        # Pydantic models — observation, action, reward
-├── suppliers.py     # Supplier pool, personas, LLM negotiation, rival buyer
-├── env.py           # Core environment — reset/step/state
-├── graders.py       # EasyGrader, MediumGrader, HardGrader
-├── simulation.py    # Market dynamics, disruption engine, stress test
-├── curriculum.py    # 5-tier difficulty scaling, reward shaping
-├── app.py           # FastAPI — all endpoints + WebSocket + MCP
-├── inference.py     # Baseline LLM script ([START]/[STEP]/[END])
-├── main.py          # Uvicorn entry point
-├── openenv.yaml     # OpenEnv spec
-├── Dockerfile       # HuggingFace Spaces deployment
-└── requirements.txt
+├── models.py                    # Pydantic models — observation, action, reward
+├── suppliers.py                 # Supplier pool, personas, LLM negotiation, rival buyer
+├── env.py                       # Core environment — reset/step/state
+├── graders.py                   # EasyGrader, MediumGrader, HardGrader
+├── simulation.py                # Market dynamics, disruption engine, stress test
+├── curriculum.py                # 5-tier difficulty scaling, reward shaping
+├── app.py                       # FastAPI — all endpoints + WebSocket + MCP
+├── inference.py                 # Baseline LLM script ([START]/[STEP]/[END])
+├── main.py                      # Uvicorn entry point
+├── openenv.yaml                 # OpenEnv spec
+├── Dockerfile                   # HuggingFace Spaces deployment
+├── requirements.txt
+├── NegotiateAI_Training.ipynb   # GRPO training notebook (Llama 3.2 3B)
+├── Blog.md                      # Hackathon writeup
+├── reward_curve.png             # GRPO training reward progression
+├── curriculum_curve.png         # Curriculum tier advancement chart
+├── environment_architecture.jpg # System architecture diagram
+└── training_pipeline.jpg        # End to end training pipeline diagram
 ```
 
 ---
