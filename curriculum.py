@@ -294,6 +294,20 @@ class CurriculumEngine:
             return 0.0
         return sum(self._window) / len(self._window)
 
+    def reset(self) -> None:
+        """
+        Clear all episode history and return to novice tier.
+        Call this before a fresh training run to avoid polluted rolling
+        averages from previous runs (e.g. junk single-step reward-fn resets).
+        """
+        self.current_tier      = "novice"
+        self.episodes_in_tier  = 0
+        self.total_episodes    = 0
+        self._best_score       = 0.0
+        self._history.clear()
+        self._window.clear()
+        self._tier_history.clear()
+
     def reward_curve(self) -> list[dict[str, float]]:
         """
         Full reward curve — list of {episode, score, rolling_avg, difficulty}.

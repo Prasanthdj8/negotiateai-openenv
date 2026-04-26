@@ -341,6 +341,25 @@ async def get_reward_curve(task_id: str) -> dict[str, Any]:
     }
 
 
+@app.post("/curriculum/{task_id}/reset")
+async def reset_curriculum(task_id: str) -> dict[str, Any]:
+    """
+    Reset the curriculum tracker for a specific task.
+    Clears all episode history and returns the tier to novice.
+    Useful before a fresh training run to avoid polluted rolling averages
+    from previous runs (e.g. junk single-step episodes from reward function calls).
+    """
+    task_id = TASK_ALIASES.get(task_id, task_id)
+    engine  = _curriculum.get(task_id)
+    engine.reset()
+    log.info(f"Curriculum reset for task={task_id}")
+    return {
+        "status":   "reset",
+        "task_id":  task_id,
+        "message":  "Curriculum history cleared. Tier returned to novice.",
+    }
+
+
 # ─────────────────────────────────────────────────────────────
 # DASHBOARD ENDPOINT
 # ─────────────────────────────────────────────────────────────
