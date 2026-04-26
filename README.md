@@ -114,6 +114,7 @@ NegotiateAI trains agents to:
 ![Training Pipeline](training_pipeline.jpg)
 
 *Training pipeline: environment → episodes → GRPO → trained agent.*
+
 ---
 
 ## Supplier Personas
