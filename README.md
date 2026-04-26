@@ -107,7 +107,13 @@ NegotiateAI trains agents to:
 │  └──────────────────────────────────────────────────┘   │
 └──────────────────────────────────────────────────────────┘
 ```
+![Environment Architecture](environment_architecture.jpg)
 
+*Agent interacts with NegotiateAI environment.*
+
+![Training Pipeline](training_pipeline.jpg)
+
+*Training pipeline: environment → episodes → GRPO → trained agent.*
 ---
 
 ## Supplier Personas
