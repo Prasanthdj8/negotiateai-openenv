@@ -52,12 +52,7 @@ The environment's curriculum engine was validated across 200 exploration episode
 
 ### GRPO Training
 
-GRPO training optimised the model's action selection using a reward signal with **131x separation** between valid procurement actions and invalid ones:
-
-- `negotiate` with `proposed_price` + `proposed_quantity` → reward **~0.13**
-- `raise_pr` without required fields → reward **0.0001**
-
-This sharp reward gap gives GRPO the gradient signal it needs to learn which actions actually move procurement outcomes forward.
+GRPO training optimised the model's action selection using a multi-step reward function. Each candidate action was evaluated across a 5-step mini-episode, giving the model a richer signal than single-step scoring.
 
 ![GRPO Training Results](reward_curve.png)
 *Step-level rewards and rolling average during GRPO training on 1333 training samples.*
@@ -75,8 +70,8 @@ This sharp reward gap gives GRPO the gradient signal it needs to learn which act
 | Hardware | NVIDIA A100 80GB |
 | Tier advancements | Novice → Apprentice → Practitioner → Expert |
 | Expert tier episodes | 43% |
-| Reward signal gap | 131x (valid vs invalid actions) |
-| First 20 steps avg reward | 0.0168 |
+| First 20 steps avg reward | 0.0101 |
+| Last 20 steps avg reward | 0.0083 |
 
 ---
 

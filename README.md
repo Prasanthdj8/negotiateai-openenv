@@ -213,7 +213,7 @@ Trained using GRPO via HuggingFace TRL on an A100 GPU.
 ### GRPO Reward Progression
 
 ![GRPO Training Results](reward_curve.png)
-*Step-level rewards and rolling average during GRPO training on 1333 training samples. Reward signal maintains 131x separation between valid and invalid actions.*
+*Step-level rewards and rolling average during GRPO training on 1333 training samples.*
 
 ### Results Summary
 
@@ -225,8 +225,8 @@ Trained using GRPO via HuggingFace TRL on an A100 GPU.
 | Training method | GRPO via HuggingFace TRL |
 | Tier advancements | Novice → Apprentice → Practitioner → Expert |
 | Expert tier episodes | 43% |
-| Reward signal separation | 131x (valid vs invalid actions) |
-| First 20 steps avg reward | 0.0168 |
+| First 20 steps avg reward | 0.0101 |
+| Last 20 steps avg reward | 0.0083 |
 
 ---
 
